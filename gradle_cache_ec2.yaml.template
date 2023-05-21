@@ -1,0 +1,49 @@
+Resources:
+  GradleCacheSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: For ssh on port 22 access and HTTP port 80 access to the cache
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: "22"
+          ToPort: "22"
+          CidrIp: <your ip (for ex. curl checkip.amazonaws.com)>/32
+        - IpProtocol: tcp
+          FromPort: "80"
+          ToPort: "80"
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: "443"
+          ToPort: "443"
+          CidrIp: 0.0.0.0/0
+  GradleCacheEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t3a.small # Amazon's AMD64 instance with 2GiB RAM
+      Tags:
+        - Key: Name
+          Value: Gradle Cache
+      ImageId: ami-04e914639d0cca79a # Amazon Linux 2023 AMI for x86
+      KeyName: !Ref KeyName
+      SecurityGroups:
+        - !Ref GradleCacheSecurityGroup
+      UserData: !Base64 |
+        #!/bin/bash
+        
+        set +x
+
+        # Install Docker
+        sudo yum update -y
+        sudo yum install docker -y
+        sudo service docker start
+        sudo usermod -a -G docker ec2-user
+
+        docker run --detach \
+        --volume /opt/build-cache-node:/data \
+        --publish 80:5071 \
+        gradle/build-cache-node:15.0 \
+        start --generate-self-signed-cert
+Parameters:
+  KeyName:
+    Type: String
+    Description: The name of the PEM key to ssh into the EC2 instance

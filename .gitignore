@@ -1,0 +1,3 @@
+*.pem
+*.properties
+gradle_cache_ec2.yaml
