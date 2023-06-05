@@ -1,3 +1,4 @@
 aws_region=<your desired region, for ex. us-west-2>
 key_name=MyKeyName
 key_path=keys/my_key.pem
+image_name=ami-00000000000

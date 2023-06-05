@@ -46,7 +46,7 @@ create() {
         --stack-name "$stack_name" \
         --template-body file://gradle_cache_ec2.yaml \
         --region "$aws_region" \
-        --parameters "ParameterKey=KeyName,ParameterValue=$key_name" \
+        --parameters ParameterKey=KeyName,ParameterValue=$key_name ParameterKey=ImageName,ParameterValue=$image_name \
         --no-cli-pager
 
     echo "waiting for stack creation to finish"

@@ -23,7 +23,7 @@ Resources:
       Tags:
         - Key: Name
           Value: Gradle Cache
-      ImageId: ami-04e914639d0cca79a # Amazon Linux 2023 AMI for x86
+      ImageId: !Ref ImageName
       KeyName: !Ref KeyName
       SecurityGroups:
         - !Ref GradleCacheSecurityGroup
